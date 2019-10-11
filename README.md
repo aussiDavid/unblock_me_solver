@@ -22,7 +22,22 @@ Output:
 ```
 ```
 
+Start by running
 
+```bash
+UID=${UID} GID=${GID} docker-compose up
+```
+
+Run commands by prefixing
+
+```bash
+UID=${UID} GID=${GID} docker-compose exec app
+```
+
+For example. To run the tests
+```bash
+UID=${UID} GID=${GID} docker-compose exec app mix test
+```
 
 ## Installation
 
