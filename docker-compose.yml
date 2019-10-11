@@ -1,0 +1,9 @@
+version: "3.5"
+
+services:
+  app:
+    build: ./
+    volumes:
+      - ./:/usr/src/app
+    user: "${UID}:${GID}"
+    command: mix test.watch
