@@ -2,6 +2,28 @@
 
 **TODO: Add description**
 
+## Usage
+
+Prefix all commands with
+
+```bash
+docker run -it --rm -u $(id -u ${USER}):$(id -g ${USER}) -v "$PWD":/usr/src/app -w /usr/src/app elixir
+```
+
+For example
+
+To run the tests
+
+```bash
+docker run -it --rm -u $(id -u ${USER}):$(id -g ${USER}) -v "$PWD":/usr/src/app -w /usr/src/app elixir mix test
+```
+
+Output:
+```
+```
+
+
+
 ## Installation
 
 If [available in Hex](https://hex.pm/docs/publish), the package can be installed
