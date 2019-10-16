@@ -100,10 +100,8 @@ defmodule UnblockMeSolver do
       UnblockMeSolver.solvable?(problem) ->
         chain
       iterations < 1 ->
-        raise "problem ran too long"
+        raise "the solution took too long"
       true ->
-        # new_chain = []
-        # UnblockMeSolver.problem_chain(problem, new_chain, iterations - 1)
         problem
           |> UnblockMeSolver.extract_solution_row
           |> Enum.filter(fn x -> x != 'A' end)
