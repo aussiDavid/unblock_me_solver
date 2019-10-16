@@ -39,6 +39,12 @@ For example. To run the tests
 UID=${UID} GID=${GID} docker-compose exec app mix test
 ```
 
+To run the tests when a file changes
+```bash
+UID=${UID} GID=${GID} docker-compose exec app mix test.watch
+
+```
+
 ## Installation
 
 If [available in Hex](https://hex.pm/docs/publish), the package can be installed
