@@ -35,15 +35,6 @@ defmodule UnblockMeSolver do
 
       iex> UnblockMeSolver.solvable?([
       ...>  ['B', 'B', nil, nil, nil],
-      ...>  ['C', 'C', nil, nil, 'F'],
-      ...>  ['A', 'A', nil, nil, 'F'],
-      ...>  ['D', 'D', nil, nil, nil],
-      ...>  ['E', 'E', nil, nil, nil],
-      ...>])
-      false
-
-      iex> UnblockMeSolver.solvable?([
-      ...>  ['B', 'B', nil, nil, nil],
       ...>  ['C', 'C', nil, nil, nil],
       ...>  ['A', 'A', nil, nil, nil],
       ...>  ['D', 'D', nil, nil, nil],
@@ -53,7 +44,7 @@ defmodule UnblockMeSolver do
   """
   def solvable? problem do
     problem
-      |> UnblockMeSolver.extract_middle_row
+      |> UnblockMeSolver.extract_solution_row
       |> Enum.drop_while(fn x -> x != 'A' end)
       |> Enum.filter(fn x -> x != 'A' end)
       |> Enum.all?(fn x -> x == nil end)
@@ -73,22 +64,11 @@ defmodule UnblockMeSolver do
       ...>])
       [{'A', :right, 3}]
 
-      # iex> UnblockMeSolver.solve([
-      # ...>  ['B', 'B', nil, nil, nil],
-      # ...>  ['C', 'C', nil, nil, 'F'],
-      # ...>  ['A', 'A', nil, nil, 'F'],
-      # ...>  ['D', 'D', nil, nil, nil],
-      # ...>  ['E', 'E', nil, nil, nil],
-      # ...>])
-      # [
-      #   {'F', :up, 1},
-      #   {'A', :right, 3}
-      # ]
   """
   def solve problem do
     if UnblockMeSolver.solvable?(problem) do
       moves = problem
-        |> UnblockMeSolver.extract_middle_row
+        |> UnblockMeSolver.extract_solution_row
         |> Enum.drop_while(fn x -> x != 'A' end)
         |> Enum.filter(fn x -> x != 'A' end)
         |> Enum.count(fn x -> x == nil end)
@@ -107,15 +87,6 @@ defmodule UnblockMeSolver do
 
       iex> UnblockMeSolver.problem_chain([
       ...>  ['B', 'B', nil, nil, nil],
-      ...>  ['C', 'C', nil, nil, nil],
-      ...>  ['A', 'A', nil, nil, nil],
-      ...>  ['D', 'D', nil, nil, nil],
-      ...>  ['E', 'E', nil, nil, nil],
-      ...>])
-      []
-
-      iex> UnblockMeSolver.problem_chain([
-      ...>  ['B', 'B', nil, nil, nil],
       ...>  ['C', 'C', nil, nil, 'F'],
       ...>  ['A', 'A', nil, nil, 'F'],
       ...>  ['D', 'D', nil, nil, nil],
@@ -123,31 +94,21 @@ defmodule UnblockMeSolver do
       ...>])
       ['F']
 
-      iex> UnblockMeSolver.problem_chain([
-      ...>  ['B', 'B', nil, 'G', 'G'],
-      ...>  ['C', 'C', nil, nil, 'F'],
-      ...>  ['A', 'A', nil, nil, 'F'],
-      ...>  ['D', 'D', nil, 'H', 'H'],
-      ...>  ['E', 'E', nil, nil, nil],
-      ...>])
-      ['F', ['G', 'H']]
   """
-  def problem_chain problem, chain \\ [], iterations \\ 0 do
+  def problem_chain problem, chain \\ [], iterations \\ 10 do
     cond do
-      # UnblockMeSolver.solvable?(problem) ->
-      #   chain
-      iterations < 0 ->
-        problem
+      UnblockMeSolver.solvable?(problem) ->
+        chain
+      iterations < 1 ->
+        raise "problem ran too long"
       true ->
-        # problem
-        #   |> UnblockMeSolver.extract_middle_row
-        #   |> Enum.filter(fn x -> x != 'A' end)
-        #   |> Enum.filter(fn x -> x != nil end)
-        #   |> Enum.uniq
+        # new_chain = []
+        # UnblockMeSolver.problem_chain(problem, new_chain, iterations - 1)
         problem
-          |> Transpose.transpose
-          |> UnblockMeSolver.move(chain)
-          |> UnblockMeSolver.problem_chain(chain, iterations - 1)
+          |> UnblockMeSolver.extract_solution_row
+          |> Enum.filter(fn x -> x != 'A' end)
+          |> Enum.filter(fn x -> x != nil end)
+          |> Enum.uniq
     end
   end
 
@@ -156,7 +117,7 @@ defmodule UnblockMeSolver do
 
   ## Examples
 
-      iex> UnblockMeSolver.extract_middle_row([
+      iex> UnblockMeSolver.extract_solution_row([
       ...>  ['B', 'B', nil, nil, nil],
       ...>  ['C', 'C', nil, nil, nil],
       ...>  ['A', 'A', nil, nil, nil],
@@ -166,7 +127,7 @@ defmodule UnblockMeSolver do
       ['A', 'A', nil, nil, nil]
 
   """
-  def extract_middle_row problem do
+  def extract_solution_row problem do
     index = length(problem) / 2 |> floor
     case Enum.fetch problem, index do
       {:ok, row} -> row
@@ -184,20 +145,5 @@ defmodule UnblockMeSolver do
     problem
       |> Transpose.transpose
       |> Enum.map(&Enum.reverse/1)
-  end
-
-  def move_down problem, block, moves do
-    # TODO: Check that the block is in the problem
-    # TODO: Check moves is positive
-    row_fn = fn row ->
-      if Enum.any?(row, fn x -> x == block end) do
-
-      else
-        row
-      end
-    end
-    problem
-      |> UnblockMeSolver.rotate_ccw
-      |> Enum.map(row_fn)
   end
 end
