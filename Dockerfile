@@ -11,9 +11,8 @@ COPY mix.exs ./
 COPY mix.lock ./
 RUN mix deps.get
 
-
 COPY . .
 
 RUN mix compile
 
-cmd "while true; do sleep 1; echo '.'; done"
+CMD ["while true; do sleep 1; echo '.'; done"]
