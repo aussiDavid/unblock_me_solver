@@ -23,9 +23,7 @@ defmodule UnblockMeSolver do
   """
 
   @doc """
-  Generates a 5 by 5 problem with 1 block.
-
-  Idealy used as a test case, the solution block is unobstructed
+  Generates problems solvable by the `UnblockMeSolver.solve/1` function. 
 
   ## Examples
 
@@ -38,6 +36,10 @@ defmodule UnblockMeSolver do
         [nil, nil, nil, nil, nil]
       ]
 
+  The first argument specifies the difficulty. Accepted inputs are:
+  * :trivial - A problem with no other blocks. Ideal for testing
+
+  Another other input will raise an error
   """
   def generate(difficulty \\ :trivial) do
     case difficulty do
