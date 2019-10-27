@@ -97,12 +97,12 @@ defmodule UnblockMeSolver.Move.MoveTest do
 
     test "when the problem is solvable with a block behind the solution block" do
       assert UnblockMeSolver.Move.solvable?([
-          [nil, nil, nil, nil, nil],
-          ['B', nil, nil, nil, nil],
-          ['B', 'A', 'A', nil, nil],
-          [nil, nil, nil, nil, nil],
-          [nil, nil, nil, nil, nil]
-        ]) == true
+               [nil, nil, nil, nil, nil],
+               ['B', nil, nil, nil, nil],
+               ['B', 'A', 'A', nil, nil],
+               [nil, nil, nil, nil, nil],
+               [nil, nil, nil, nil, nil]
+             ]) == true
     end
   end
 end

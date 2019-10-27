@@ -2,7 +2,7 @@ defmodule UnblockMeSolver.Move do
   alias UnblockMeSolver.Move
 
   @moduledoc false
-  
+
   @doc """
   Determines if the problem is solvable
   A problem is solvable when there are empty spaces to the right of the solution block ['A', 'A']
