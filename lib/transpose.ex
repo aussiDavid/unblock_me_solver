@@ -1,4 +1,5 @@
 defmodule Transpose do
+  @moduledoc false
 
   def transpose(m) do
     attach_row(m, [])
