@@ -5,5 +5,4 @@ services:
     build: ./
     volumes:
       - ./:/usr/src/app
-    user: "${UID}:${GID}"
     command: mix test.watch
