@@ -40,7 +40,7 @@ defmodule Transpose do
   first row of the result state, and prepend that list to the new state.
   """
   def make_column([], _, new) do
-   Enum.reverse(new)
+    Enum.reverse(new)
   end
 
   def make_column(row, [], accumulator) do
@@ -63,8 +63,7 @@ defmodule Transpose do
     Enum.reverse(result)
   end
 
-  def reverse_rows([first|others], result) do
+  def reverse_rows([first | others], result) do
     reverse_rows(others, [Enum.reverse(first) | result])
   end
-
 end
