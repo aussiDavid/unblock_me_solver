@@ -2,36 +2,27 @@ defmodule UnblockMeSolver.Move.MoveTest do
   use ExUnit.Case
   doctest UnblockMeSolver.Move
 
-  describe "problem_chain/1" do
-    test "when there are no blocks in the way of solving the problem" do
-      assert UnblockMeSolver.Move.problem_chain([
-               ['B', 'B', nil, nil, nil],
-               ['C', 'C', nil, nil, nil],
-               ['A', 'A', nil, nil, nil],
-               ['D', 'D', nil, nil, nil],
-               ['E', 'E', nil, nil, nil]
-             ]) == []
+  describe "solved?/2" do
+    test "when a the solution block is on the second row and solved" do
+      assert UnblockMeSolver.Move.solved?([
+        [nil, nil],
+        ['A', 'A']
+      ], 'A') == true
     end
 
-    test "when there is 1 block in the way and a block that can be ignored" do
-      assert UnblockMeSolver.Move.problem_chain([
-               [nil, nil, nil, 'G', 'G'],
-               [nil, nil, nil, nil, 'F'],
-               ['A', 'A', nil, nil, 'F'],
-               [nil, nil, nil, nil, nil],
-               [nil, nil, nil, nil, nil]
-             ]) == ['F']
+    test "when a the solution block is on the first of 2 rows and solved" do
+      assert UnblockMeSolver.Move.solved?([
+        ['A', 'A'],
+        [nil, nil]
+      ], 'A') == true
     end
 
-    # test "when there are 2 blocks in the way and a block that can be ignored" do
-    #   assert UnblockMeSolver.Move.problem_chain([
-    #       [nil, nil, nil, 'G', 'G'],
-    #       [nil, nil, nil, nil, 'F'],
-    #       ['A', 'A', nil, nil, 'F'],
-    #       [nil, nil, nil, 'H', 'H'],
-    #       [nil, nil, nil, nil, nil],
-    #     ]) == ['F', 'G']
-    # end
+    test "when a the solution block is on the first of 2 rows and not solved" do
+      assert UnblockMeSolver.Move.solved?([
+        ['A', 'A', nil],
+        [nil, nil, nil]
+      ], 'A') == false
+    end
   end
 
   describe "solvable?/1" do

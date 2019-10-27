@@ -19,7 +19,11 @@ defmodule UnblockMeSolver do
   Then solving the problem:
 
       iex> UnblockMeSolver.generate(:trivial) |> UnblockMeSolver.solve()
-      [{'A', :right, 3}]
+      [
+        {'A', :right, 1},
+        {'A', :right, 1},
+        {'A', :right, 1},
+      ]
   """
 
   @doc """
@@ -54,22 +58,21 @@ defmodule UnblockMeSolver do
   ## Examples
 
       iex> UnblockMeSolver.generate(:trivial) |> UnblockMeSolver.solve()
-      [{'A', :right, 3}]
+      [
+        {'A', :right, 1},
+        {'A', :right, 1},
+        {'A', :right, 1},
+      ]
 
   """
-  def solve(problem) do
-    if UnblockMeSolver.Move.solvable?(problem) do
-      moves =
-        problem
-        |> UnblockMeSolver.Move.extract_solution_row()
-        |> Enum.drop_while(fn x -> x != 'A' end)
-        |> Enum.filter(fn x -> x != 'A' end)
-        |> Enum.count(fn x -> x == nil end)
-
-      [{'A', :right, moves}]
+  def solve(problem, history \\ []) do
+    if UnblockMeSolver.Move.solved?(problem, 'A') do
+      history
     else
-      # UnblockMeSolver.solve problem
-      []
+      new_history = Enum.concat(history, [{'A', :right, 1}])
+      new_problem = UnblockMeSolver.Move.right_in_row(problem, 'A')
+      
+      UnblockMeSolver.solve(new_problem, new_history)
     end
   end
 end
