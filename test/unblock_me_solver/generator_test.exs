@@ -1,4 +1,4 @@
 defmodule UnblockMeGeneratorTest do
   use ExUnit.Case
-  doctest UnblockMeGenerator
+  doctest UnblockMeSolver.Generator
 end

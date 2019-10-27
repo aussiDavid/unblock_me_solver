@@ -9,7 +9,7 @@ defmodule UnblockMeSolver.Move do
 
   ## Examples
 
-      iex> Move.solvable?([
+      iex> UnblockMeSolver.Move.solvable?([
       ...>  ['B', 'B', nil, nil, nil],
       ...>  ['C', 'C', nil, nil, nil],
       ...>  ['A', 'A', nil, nil, nil],
@@ -31,7 +31,7 @@ defmodule UnblockMeSolver.Move do
 
   ## Examples
 
-      iex> Move.problem_chain([
+      iex> UnblockMeSolver.Move.problem_chain([
       ...>  ['B', 'B', nil, nil, nil],
       ...>  ['C', 'C', nil, nil, 'F'],
       ...>  ['A', 'A', nil, nil, 'F'],
@@ -63,7 +63,7 @@ defmodule UnblockMeSolver.Move do
 
   ## Examples
 
-      iex> Move.extract_solution_row([
+      iex> UnblockMeSolver.Move.extract_solution_row([
       ...>  ['B', 'B', nil, nil, nil],
       ...>  ['C', 'C', nil, nil, nil],
       ...>  ['A', 'A', nil, nil, nil],

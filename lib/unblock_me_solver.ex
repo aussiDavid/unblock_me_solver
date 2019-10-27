@@ -41,7 +41,7 @@ defmodule UnblockMeSolver do
   """
   def generate(difficulty \\ :trivial) do
     case difficulty do
-      :trivial -> UnblockMeGenerator.trivial
+      :trivial -> UnblockMeSolver.Generator.trivial
       _ -> raise "Difficulty level not recognised"
     end
   end

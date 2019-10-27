@@ -1,6 +1,6 @@
 defmodule UnblockMeSolver.Move.MoveTest do
   use ExUnit.Case
-  doctest UnblockMeSolver.Move.Move
+  doctest UnblockMeSolver.Move
 
   describe "problem_chain/1" do
     test "when there are no blocks in the way of solving the problem" do

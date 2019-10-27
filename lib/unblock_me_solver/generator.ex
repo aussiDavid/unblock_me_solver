@@ -1,4 +1,4 @@
-defmodule UnblockMeGenerator do
+defmodule UnblockMeSolver.Generator do
   @moduledoc false
 
   @doc """
@@ -8,7 +8,7 @@ defmodule UnblockMeGenerator do
 
   ## Examples
 
-      iex> UnblockMeGenerator.trivial()
+      iex> UnblockMeSolver.Generator.trivial()
       [
         [nil, nil, nil, nil, nil],
         [nil, nil, nil, nil, nil],
