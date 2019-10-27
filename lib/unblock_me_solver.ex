@@ -51,7 +51,7 @@ defmodule UnblockMeSolver do
 
   ## Examples
 
-      iex> UnblockMeSolver.generate(:trivial) |> UnblockMeSolver.solve
+      iex> UnblockMeSolver.generate(:trivial) |> UnblockMeSolver.solve()
       [{'A', :right, 3}]
 
   """
