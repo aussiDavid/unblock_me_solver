@@ -70,6 +70,44 @@ defmodule UnblockMeSolver.Move do
   end
 
   @doc """
+  Determines if a block can be moved right and returns a tuple {status, updated_problem}.
+  status will be :ok when the move is successful, otherwise :error
+
+  ## Examples
+
+      iex> UnblockMeSolver.Move.right_in_row_safely([
+      ...>  ['C', 'C', nil, nil],
+      ...>  ['A', 'A', nil, nil],
+      ...>  ['D', 'D', nil, nil],
+      ...>], 'A')
+      {:ok, [
+        ['C', 'C', nil, nil],
+        [nil, 'A', 'A', nil],
+        ['D', 'D', nil, nil],
+      ]}
+
+      iex> UnblockMeSolver.Move.right_in_row_safely([
+      ...>  ['A', 'A', 'B'],
+      ...>  [nil, nil, 'B'],
+      ...>  [nil, nil, nil],
+      ...>], 'A')
+      {:error, nil}
+  """
+  def right_in_row_safely(problem, block) do
+    blocked? = problem
+    |> Enum.find(fn row -> Enum.any?(row, fn x -> x == block end) end)
+    |> Enum.reverse
+    |> Enum.take_while(fn x -> x != block end)
+    |> Enum.any?(fn x -> x != nil end)
+
+    if blocked? do
+      {:error, nil}
+    else
+      {:ok, Move.right_in_row(problem, block)}
+    end
+  end
+
+  @doc """
   Finds and moves a block right by 1 in a problem
 
   ## Examples
