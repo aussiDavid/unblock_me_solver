@@ -70,9 +70,17 @@ defmodule UnblockMeSolver do
       history
     else
       new_history = Enum.concat(history, [{'A', :right, 1}])
-      {:ok, new_problem} = UnblockMeSolver.Move.right_in_row_safely(problem, 'A')
       
-      UnblockMeSolver.solve(new_problem, new_history)
+      {blocked_block, new_problem} = UnblockMeSolver.Move.right_with_next(problem, 'A')
+
+      if blocked_block == nil do
+        UnblockMeSolver.solve(new_problem, new_history)
+      else
+        # {new_blocked_block, new_new_problem} = UnblockMeSolver.Move.down_with_next(problem, blocked_block)
+        # UnblockMeSolver.solve(new_new_problem, new_history)
+        []
+      end
+      
     end
   end
 end
