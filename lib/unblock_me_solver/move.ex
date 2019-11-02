@@ -108,8 +108,9 @@ defmodule UnblockMeSolver.Move do
   end
 
   @doc """
-  Determines if a block can be moved right and returns a tuple {status, updated_problem}.
-  status will be :ok when the move is successful, otherwise :error
+  Moves a block right and returns a tuple {blocked_block, updated_problem}
+  of the block in the way (nil if no block is in the way) and the updated
+  problem (assuming it was succesful)
 
   ## Examples
 
@@ -151,6 +152,111 @@ defmodule UnblockMeSolver.Move do
   end
 
   @doc """
+  Moves a block left and returns a tuple {blocked_block, updated_problem}
+  of the block in the way (nil if no block is in the way) and the updated
+  problem (assuming it was succesful)
+
+  ## Examples
+
+      iex> UnblockMeSolver.Move.left_with_next([
+      ...>  [nil, 'C', 'C'],
+      ...>  [nil, 'A', 'A'],
+      ...>  [nil, 'D', 'D'],
+      ...>], 'A')
+      {nil, [
+        [nil, 'C', 'C'],
+        ['A', 'A', nil],
+        [nil, 'D', 'D'],
+      ]}
+
+      # iex> UnblockMeSolver.Move.left_with_next([
+      # ...>  ['A', 'A', 'B'],
+      # ...>  [nil, nil, 'B'],
+      # ...>  [nil, nil, nil],
+      # ...>], 'A')
+      # {'B', [
+      #   ['A', 'A', 'B'],
+      #   [nil, nil, 'B'],
+      #   [nil, nil, nil],
+      # ]}
+  """
+  def left_with_next(problem, block) do
+    next_block = problem
+    |> Move.rotate_ccw
+    |> Move.rotate_ccw
+    |> Enum.find(fn row -> Enum.any?(row, fn x -> x == block end) end)
+    |> Enum.reverse
+    |> Enum.take_while(fn x -> x != block end)
+    |> Enum.reverse
+    |> Enum.at(0)
+
+    if next_block == nil do
+      {
+        next_block,
+        problem
+        |> Move.rotate_ccw
+        |> Move.rotate_ccw
+        |> Move.right_in_row(block)
+        |> Move.rotate_cw
+        |> Move.rotate_cw
+      }
+    else
+      {next_block, problem}
+    end
+  end
+
+  @doc """
+  Moves a block down and returns a tuple {blocked_block, updated_problem}
+  of the block in the way (nil if no block is in the way) and the updated
+  problem (assuming it was succesful)
+
+  ## Examples
+
+      iex> UnblockMeSolver.Move.down_with_next([
+      ...>  ['A'],
+      ...>  ['A'],
+      ...>  [nil],
+      ...>], 'A')
+      {nil, [
+        [nil],
+        ['A'],
+        ['A'],
+      ]}
+
+      iex> UnblockMeSolver.Move.down_with_next([
+      ...>  ['A', nil],
+      ...>  ['A', nil],
+      ...>  ['B', 'B'],
+      ...>], 'A')
+      {'B', [
+        ['A', nil],
+        ['A', nil],
+        ['B', 'B'],
+      ]}
+  """
+  def down_with_next(problem, block) do
+    next_block = problem
+    |> Move.rotate_ccw
+    |> Enum.find(fn row -> Enum.any?(row, fn x -> x == block end) end)
+    |> Enum.reverse
+    |> Enum.take_while(fn x -> x != block end)
+    |> Enum.reverse
+    |> Enum.at(0)
+
+    if next_block == nil do
+      {
+        next_block,
+        problem
+        |> Move.rotate_ccw
+        |> Move.right_in_row(block)
+        |> Move.rotate_cw
+      }
+    else
+      {next_block, problem}
+    end
+  end
+
+  @doc """
   Finds and moves a block right by 1 in a problem
 
   ## Examples
@@ -168,7 +274,7 @@ defmodule UnblockMeSolver.Move do
   """
   def right_in_row(problem, block) do
     problem
-    |> Enum.map(fn row -> 
+    |> Enum.map(fn row ->
       if Enum.any?(row, fn x -> x == block end) do
         Move.right(row, block)
       else

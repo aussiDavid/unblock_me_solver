@@ -1,6 +1,6 @@
 defmodule UnblockMeSolver do
   @moduledoc """
-  UnblockMeSolver is a solver for the UnblockMe mobile puzzle game. 
+  UnblockMeSolver is a solver for the UnblockMe mobile puzzle game.
 
   This module to generate and solve UnblockMe problems.
   UnblockMeSolver generates and solves UnblockMe problems in various configurations
@@ -27,7 +27,7 @@ defmodule UnblockMeSolver do
   """
 
   @doc """
-  Generates problems solvable by the `UnblockMeSolver.solve/1` function. 
+  Generates problems solvable by the `UnblockMeSolver.solve/1` function.
 
   ## Examples
 
@@ -69,18 +69,22 @@ defmodule UnblockMeSolver do
     if UnblockMeSolver.Move.solved?(problem, 'A') do
       history
     else
-      new_history = Enum.concat(history, [{'A', :right, 1}])
-      
-      {blocked_block, new_problem} = UnblockMeSolver.Move.right_with_next(problem, 'A')
-
-      if blocked_block == nil do
-        UnblockMeSolver.solve(new_problem, new_history)
+      {right_block, right_problem} = UnblockMeSolver.Move.right_with_next(problem, 'A')
+      if right_block == nil do
+        UnblockMeSolver.solve(right_problem, Enum.concat(history, [{'A', :right, 1}]))
       else
-        # {new_blocked_block, new_new_problem} = UnblockMeSolver.Move.down_with_next(problem, blocked_block)
-        # UnblockMeSolver.solve(new_new_problem, new_history)
-        []
+        {down_block, down_problem} = UnblockMeSolver.Move.down_with_next(problem, right_block)
+        if down_block == nil do
+          UnblockMeSolver.solve(down_problem, Enum.concat(history, [{right_block, :down, 1}]))
+        else
+          {left_block, left_problem} = UnblockMeSolver.Move.left_with_next(problem, down_block)
+          if left_block == nil do
+            UnblockMeSolver.solve(left_problem, Enum.concat(history, [{down_block, :left, 1}]))
+          else
+            nil
+          end
+        end
       end
-      
     end
   end
 end
