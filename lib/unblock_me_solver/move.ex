@@ -353,4 +353,29 @@ defmodule UnblockMeSolver.Move do
     |> Transpose.transpose()
     |> Enum.map(&Enum.reverse/1)
   end
+
+  @doc """
+  Returns a the direction of the block in a problem
+  I.e. :horizontal, :vertical. nil if otherwise
+
+  ## Examples
+
+      iex> UnblockMeSolver.Move.moves([[nil, 'A', 'A', nil]], 'A')
+      :horizontal
+
+      iex> UnblockMeSolver.Move.moves([[nil], ['A'], ['A'], [nil]], 'A')
+      :vertical
+
+  """
+  def moves(problem, block) do
+    has_row? = fn row ->
+      Enum.count(row, fn x -> x == block end) > 1
+    end
+
+    cond do
+      Enum.any?(problem, has_row?) -> :horizontal
+      Enum.any?(Move.rotate_cw(problem), has_row?) -> :vertical
+      true -> nil
+    end
+  end
 end

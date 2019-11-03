@@ -96,4 +96,55 @@ defmodule UnblockMeSolver.Move.MoveTest do
              ]) == true
     end
   end
+
+  describe "moves/2" do
+    test "when the block is horizontal" do
+      assert UnblockMeSolver.Move.moves([
+        [nil, nil, nil, nil],
+        [nil, 'A', 'A', nil],
+        [nil, nil, nil, nil],
+      ], 'A') == :horizontal
+    end
+
+    test "when the block is vertical" do
+      assert UnblockMeSolver.Move.moves([
+        [nil, nil, nil],
+        [nil, 'A', nil],
+        [nil, 'A', nil],
+        [nil, nil, nil],
+      ], 'A') == :vertical
+    end
+
+    test "when the block is horizontal adjacent to a wall" do
+      assert UnblockMeSolver.Move.moves([
+        [nil, nil, nil],
+        ['A', 'A', nil],
+        [nil, nil, nil],
+      ], 'A') == :horizontal
+    end
+
+    test "when the block is vertical adjacent to a wall" do
+      assert UnblockMeSolver.Move.moves([
+        [nil, 'A', nil],
+        [nil, 'A', nil],
+        [nil, nil, nil],
+      ], 'A') == :vertical
+    end
+
+    test "when the block is not in the problem" do
+      assert UnblockMeSolver.Move.moves([
+        [nil, 'A', nil],
+        [nil, 'A', nil],
+        [nil, nil, nil],
+      ], 'B') == nil
+    end
+
+    test "when the block is in 1 cell" do
+      assert UnblockMeSolver.Move.moves([
+        [nil, nil, nil],
+        [nil, 'A', nil],
+        [nil, nil, nil],
+      ], 'A') == nil
+    end
+  end
 end
