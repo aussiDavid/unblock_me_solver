@@ -97,9 +97,9 @@ defmodule UnblockMeSolver.Move.MoveTest do
     end
   end
 
-  describe "moves/2" do
+  describe "direction/2" do
     test "when the block is horizontal" do
-      assert UnblockMeSolver.Move.moves([
+      assert UnblockMeSolver.Move.direction([
         [nil, nil, nil, nil],
         [nil, 'A', 'A', nil],
         [nil, nil, nil, nil],
@@ -107,7 +107,7 @@ defmodule UnblockMeSolver.Move.MoveTest do
     end
 
     test "when the block is vertical" do
-      assert UnblockMeSolver.Move.moves([
+      assert UnblockMeSolver.Move.direction([
         [nil, nil, nil],
         [nil, 'A', nil],
         [nil, 'A', nil],
@@ -116,7 +116,7 @@ defmodule UnblockMeSolver.Move.MoveTest do
     end
 
     test "when the block is horizontal adjacent to a wall" do
-      assert UnblockMeSolver.Move.moves([
+      assert UnblockMeSolver.Move.direction([
         [nil, nil, nil],
         ['A', 'A', nil],
         [nil, nil, nil],
@@ -124,7 +124,7 @@ defmodule UnblockMeSolver.Move.MoveTest do
     end
 
     test "when the block is vertical adjacent to a wall" do
-      assert UnblockMeSolver.Move.moves([
+      assert UnblockMeSolver.Move.direction([
         [nil, 'A', nil],
         [nil, 'A', nil],
         [nil, nil, nil],
@@ -132,7 +132,7 @@ defmodule UnblockMeSolver.Move.MoveTest do
     end
 
     test "when the block is not in the problem" do
-      assert UnblockMeSolver.Move.moves([
+      assert UnblockMeSolver.Move.direction([
         [nil, 'A', nil],
         [nil, 'A', nil],
         [nil, nil, nil],
@@ -140,11 +140,58 @@ defmodule UnblockMeSolver.Move.MoveTest do
     end
 
     test "when the block is in 1 cell" do
-      assert UnblockMeSolver.Move.moves([
+      assert UnblockMeSolver.Move.direction([
         [nil, nil, nil],
         [nil, 'A', nil],
         [nil, nil, nil],
       ], 'A') == nil
+    end
+  end
+
+  describe "with_next/3" do
+    test "when moving a block right" do
+      assert UnblockMeSolver.Move.with_next([
+        [nil, nil, nil],
+        ['A', 'A', nil],
+        [nil, nil, nil],
+      ], :right, 'A') == {
+        nil,
+        [
+          [nil, nil, nil],
+          [nil, 'A', 'A'],
+          [nil, nil, nil],
+        ]
+      }
+    end
+
+    test "when moving a block left" do
+      assert UnblockMeSolver.Move.with_next([
+        [nil, nil, nil],
+        [nil, 'A', 'A'],
+        [nil, nil, nil],
+      ], :left, 'A') == {
+        nil,
+        [
+          [nil, nil, nil],
+          ['A', 'A', nil],
+          [nil, nil, nil],
+        ]
+      }
+    end
+
+    test "when moving a block up" do
+      assert UnblockMeSolver.Move.with_next([
+        [nil, nil, nil],
+        [nil, 'A', nil],
+        [nil, 'A', nil],
+      ], :up, 'A') == {
+        nil,
+        [
+          [nil, 'A', nil],
+          [nil, 'A', nil],
+          [nil, nil, nil],
+        ]
+      }
     end
   end
 end

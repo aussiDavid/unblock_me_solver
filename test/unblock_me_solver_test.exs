@@ -39,54 +39,54 @@ defmodule UnblockMeSolverTest do
       ]
     end
 
-    test "when there is a block in the way with space to move up" do
-      assert UnblockMeSolver.solve([
-        [nil, nil, nil],
-        ['A', 'A', 'B'],
-        [nil, nil, 'B'],
-        [nil, nil, nil],
-      ]) == [
-        {'B', :down, 1},
-        {'A', :right, 1}
-      ]
-    end
+    # test "when there is a block in the way with space to move up" do
+    #   assert UnblockMeSolver.solve([
+    #     [nil, nil, nil],
+    #     ['A', 'A', 'B'],
+    #     [nil, nil, 'B'],
+    #     [nil, nil, nil],
+    #   ]) == [
+    #     {'B', :down, 1},
+    #     {'A', :right, 1}
+    #   ]
+    # end
 
-    test "when there is a block in the way with an extra column" do
-      assert UnblockMeSolver.solve([
-        ['A', 'A', 'B', nil],
-        [nil, nil, 'B', nil],
-        [nil, nil, nil, nil],
-      ]) == [
-        {'B', :down, 1},
-        {'A', :right, 1},
-        {'A', :right, 1}
-      ]
-    end
+    # test "when there is a block in the way with an extra column" do
+    #   assert UnblockMeSolver.solve([
+    #     ['A', 'A', 'B', nil],
+    #     [nil, nil, 'B', nil],
+    #     [nil, nil, nil, nil],
+    #   ]) == [
+    #     {'B', :down, 1},
+    #     {'A', :right, 1},
+    #     {'A', :right, 1}
+    #   ]
+    # end
 
-    test "when there are 2 adjacent blocks in the way" do
-      assert UnblockMeSolver.solve([
-        ['A', 'A', 'B', 'C'],
-        [nil, nil, 'B', 'C'],
-        [nil, nil, nil, nil],
-      ]) == [
-        {'B', :down, 1},
-        {'A', :right, 1},
-        {'C', :down, 1},
-        {'A', :right, 1}
-      ]
-    end
+    # test "when there are 2 adjacent blocks in the way" do
+    #   assert UnblockMeSolver.solve([
+    #     ['A', 'A', 'B', 'C'],
+    #     [nil, nil, 'B', 'C'],
+    #     [nil, nil, nil, nil],
+    #   ]) == [
+    #     {'B', :down, 1},
+    #     {'A', :right, 1},
+    #     {'C', :down, 1},
+    #     {'A', :right, 1}
+    #   ]
+    # end
 
-    test "when there are 2 intersecting blocks in the way" do
-      assert UnblockMeSolver.solve([
-        ['A', 'A', 'B'],
-        [nil, nil, 'B'],
-        [nil, 'C', 'C'],
-      ]) == [
-        {'C', :left, 1},
-        {'B', :down, 1},
-        {'A', :right, 1}
-      ]
-    end
+    # test "when there are 2 intersecting blocks in the way" do
+    #   assert UnblockMeSolver.solve([
+    #     ['A', 'A', 'B'],
+    #     [nil, nil, 'B'],
+    #     [nil, 'C', 'C'],
+    #   ]) == [
+    #     {'C', :left, 1},
+    #     {'B', :down, 1},
+    #     {'A', :right, 1}
+    #   ]
+    # end
 
     # test "when there are 4 intersecting blocks in the way" do
     #   assert UnblockMeSolver.solve([

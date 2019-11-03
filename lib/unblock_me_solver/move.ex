@@ -152,6 +152,46 @@ defmodule UnblockMeSolver.Move do
   end
 
   @doc """
+  Moves a block in the directation and returns a tuple
+  {blocked_block, updated_problem} of the block in the way
+  (nil if no block is in the way) and the updated problem
+  (assuming it was succesful)
+
+  ## Examples
+
+      iex> UnblockMeSolver.Move.with_next([
+      ...>  ['C', 'C', nil],
+      ...>  ['A', 'A', nil],
+      ...>  ['D', 'D', nil],
+      ...>], :right, 'A')
+      {nil, [
+        ['C', 'C', nil],
+        [nil, 'A', 'A'],
+        ['D', 'D', nil],
+      ]}
+
+      iex> UnblockMeSolver.Move.with_next([
+      ...>  ['A', 'A', 'B'],
+      ...>  [nil, nil, 'B'],
+      ...>  [nil, nil, nil],
+      ...>], :right, 'A')
+      {'B', [
+        ['A', 'A', 'B'],
+        [nil, nil, 'B'],
+        [nil, nil, nil],
+      ]}
+  """
+  def with_next(problem, direction, block) do
+    case direction do
+      :right -> Move.right_with_next(problem, block)
+      :down -> Move.down_with_next(problem, block)
+      :up -> Move.up_with_next(problem, block)
+      :left -> Move.left_with_next(problem, block)
+      _ -> raise "Can not move in the direction #{direction}"
+    end
+  end
+
+  @doc """
   Moves a block left and returns a tuple {blocked_block, updated_problem}
   of the block in the way (nil if no block is in the way) and the updated
   problem (assuming it was succesful)
@@ -254,6 +294,14 @@ defmodule UnblockMeSolver.Move do
     else
       {next_block, problem}
     end
+  end
+
+  def up_with_next(problem, block) do
+    { next_block, problem_in } = problem
+    |> Move.rotate_cw
+    |> Move.right_with_next(block)
+
+    { next_block, Move.rotate_ccw(problem_in) }
   end
 
   @doc """
@@ -360,14 +408,14 @@ defmodule UnblockMeSolver.Move do
 
   ## Examples
 
-      iex> UnblockMeSolver.Move.moves([[nil, 'A', 'A', nil]], 'A')
+      iex> UnblockMeSolver.Move.direction([[nil, 'A', 'A', nil]], 'A')
       :horizontal
 
-      iex> UnblockMeSolver.Move.moves([[nil], ['A'], ['A'], [nil]], 'A')
+      iex> UnblockMeSolver.Move.direction([[nil], ['A'], ['A'], [nil]], 'A')
       :vertical
 
   """
-  def moves(problem, block) do
+  def direction(problem, block) do
     has_row? = fn row ->
       Enum.count(row, fn x -> x == block end) > 1
     end
