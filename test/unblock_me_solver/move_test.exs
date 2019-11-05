@@ -179,6 +179,21 @@ defmodule UnblockMeSolver.Move.MoveTest do
       }
     end
 
+    test "when attempting to move a block right blocked by a wall" do
+      assert UnblockMeSolver.Move.with_next([
+        [nil, nil, nil],
+        [nil, 'A', 'A'],
+        [nil, nil, nil],
+      ], :right, 'A') == {
+        nil,
+        [
+          [nil, nil, nil],
+          [nil, 'A', 'A'],
+          [nil, nil, nil],
+        ]
+      }
+    end
+
     test "when moving a block left" do
       assert UnblockMeSolver.Move.with_next([
         [nil, nil, nil],
@@ -194,17 +209,17 @@ defmodule UnblockMeSolver.Move.MoveTest do
       }
     end
 
-    test "when attempting to move a block left blocked by another block" do
+    test "when attempting to move a block left blocked by a wall" do
       assert UnblockMeSolver.Move.with_next([
         [nil, nil, nil],
-        ['B', 'A', 'A'],
-        ['B', nil, nil],
+        ['A', 'A', nil],
+        [nil, nil, nil],
       ], :left, 'A') == {
-        'B',
+        nil,
         [
           [nil, nil, nil],
-          ['B', 'A', 'A'],
-          ['B', nil, nil],
+          ['A', 'A', nil],
+          [nil, nil, nil],
         ]
       }
     end
@@ -224,7 +239,6 @@ defmodule UnblockMeSolver.Move.MoveTest do
       }
     end
 
-
     test "when attempting to move a block up blocked by another block" do
       assert UnblockMeSolver.Move.with_next([
         ['B', 'B', nil],
@@ -236,6 +250,21 @@ defmodule UnblockMeSolver.Move.MoveTest do
           ['B', 'B', nil],
           ['A', nil, nil],
           ['A', nil, nil],
+        ]
+      }
+    end
+
+    test "when attempting to move a block up blocked by a wall" do
+      assert UnblockMeSolver.Move.with_next([
+        ['A', nil, nil],
+        ['A', nil, nil],
+        [nil, nil, nil],
+      ], :up, 'A') == {
+        nil,
+        [
+          ['A', nil, nil],
+          ['A', nil, nil],
+          [nil, nil, nil],
         ]
       }
     end
@@ -266,6 +295,21 @@ defmodule UnblockMeSolver.Move.MoveTest do
           [nil, 'A', nil],
           [nil, 'A', nil],
           [nil, 'B', 'B'],
+        ]
+      }
+    end
+
+    test "when attempting to move a block down blocked by a wall" do
+      assert UnblockMeSolver.Move.with_next([
+        [nil, nil, nil],
+        [nil, 'A', nil],
+        [nil, 'A', nil],
+      ], :down, 'A') == {
+        nil,
+        [
+          [nil, nil, nil],
+          [nil, 'A', nil],
+          [nil, 'A', nil],
         ]
       }
     end

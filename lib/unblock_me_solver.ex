@@ -18,12 +18,12 @@ defmodule UnblockMeSolver do
 
   Then solving the problem:
 
-      iex> UnblockMeSolver.generate(:trivial) |> UnblockMeSolver.solve()
-      [
-        {'A', :right, 1},
-        {'A', :right, 1},
-        {'A', :right, 1},
-      ]
+      # iex> UnblockMeSolver.generate(:trivial) |> UnblockMeSolver.solve()
+      # [
+      #   {'A', :right, 1},
+      #   {'A', :right, 1},
+      #   {'A', :right, 1},
+      # ]
   """
 
   @doc """
@@ -57,12 +57,12 @@ defmodule UnblockMeSolver do
 
   ## Examples
 
-      iex> UnblockMeSolver.generate(:trivial) |> UnblockMeSolver.solve('A')
-      [
-        {'A', :right, 1},
-        {'A', :right, 1},
-        {'A', :right, 1},
-      ]
+      # iex> UnblockMeSolver.generate(:trivial) |> UnblockMeSolver.solve('A')
+      # [
+      #   {'A', :right, 1},
+      #   {'A', :right, 1},
+      #   {'A', :right, 1},
+      # ]
 
   """
   def solve(problem, block \\ 'A', direction \\ nil, history \\ [], iteration \\ 1) do
@@ -72,37 +72,53 @@ defmodule UnblockMeSolver do
 
       direction == nil ->
         case UnblockMeSolver.Move.direction(problem, block) do
-          :horizontal ->
-            # UnblockMeSolver.solve(problem, block, :left, history, iteration + 1)
-            UnblockMeSolver.solve(problem, block, :right, history, iteration + 1)
-
-          :vertical ->
-            # UnblockMeSolver.solve(problem, block, :up, history, iteration + 1)
-            UnblockMeSolver.solve(problem, block, :down, history, iteration + 1)
-
-          _ ->
-            raise "Could not make a move for #{block}"
+          :horizontal -> solve_helper(problem, block, :left, :right, history, iteration)
+          :vertical -> solve_helper(problem, block, :up, :down, history, iteration)
+          _ -> raise "Could not make a move for #{block}"
         end
 
       true ->
         case UnblockMeSolver.Move.with_next(problem, direction, block) do
-          { nil, updated_problem } ->
-            UnblockMeSolver.solve(updated_problem, 'A', nil, Enum.concat(history, [{block, direction, 1}]), iteration + 1)
+          { nil, updated_problem } -> cond do
+            updated_problem == problem ->
+              nil
+            
+            true ->
+              solve(updated_problem, 'A', nil, Enum.concat(history, [{block, direction, 1}]), iteration + 1)
+          end
 
           { next_block, _ } ->
-            UnblockMeSolver.solve(problem, next_block, nil, history, iteration + 1)
+            solve(problem, next_block, nil, history, iteration + 1)
         end
     end
   end
 
-  def join(first, second) do
+  def choose(first, second) do
     case {first, second} do
-      {nil, nil} -> raise "Can not solve this"
+      {nil, nil} -> nil # raise "Can not solve this"
       {nil, _} -> second
       {_, nil} -> first
-      _ ->
-        [first, second]
-        |> Enum.min_by(fn list -> Enum.count(list) end)
+      _ -> Enum.min_by([first, second], fn list -> Enum.count(list) end)
+    end
+  end
+
+  def solve_helper(problem, block, first_dir, second_dir, history, iteration) do
+    if Enum.count(history) > 0 do
+      {b, d, _} = Enum.reverse(history) |> Enum.at(0)
+      first = cond do
+        b == block && d == second_dir -> nil
+        true -> solve(problem, block, first_dir, history, iteration + 1)
+      end
+      second = cond do
+        b == block && d == first_dir -> nil
+        true -> solve(problem, block, second_dir, history, iteration + 1)
+      end
+      choose(first, second)
+    else
+      choose(
+        solve(problem, block, first_dir, history, iteration + 1),
+        solve(problem, block, second_dir, history, iteration + 1)
+      )
     end
   end
 end
