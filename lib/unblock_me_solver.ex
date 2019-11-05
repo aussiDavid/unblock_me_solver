@@ -69,6 +69,7 @@ defmodule UnblockMeSolver do
     cond do
       UnblockMeSolver.Move.solved?(problem, 'A') -> history
       iteration > 20 -> raise "Took too many moves"
+      reverse?(history, block, direction) -> nil
 
       direction == nil ->
         case UnblockMeSolver.Move.direction(problem, block) do
@@ -119,6 +120,25 @@ defmodule UnblockMeSolver do
         solve(problem, block, first_dir, history, iteration + 1),
         solve(problem, block, second_dir, history, iteration + 1)
       )
+    end
+  end
+
+  def reverse?(history, block, direction) do
+    if Enum.count(history) == 0 do
+      false
+    else
+      {a, b, _} = Enum.reverse(history) |> Enum.at(0)
+      if a == block do
+        b == case direction do
+          :left -> :right
+          :right -> :left
+          :up -> :down
+          :down -> :up
+          _ -> nil
+        end
+      else
+        false
+      end
     end
   end
 end
