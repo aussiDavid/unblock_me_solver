@@ -74,37 +74,35 @@ defmodule UnblockMeSolver do
 
   def solve(problem, block, direction, history, iteration) do
     cond do
-      iteration > 20 -> raise "Took too many moves"
+      iteration > 50 -> raise "Took too many moves"
       UnblockMeSolver.Move.solved?(problem, 'A') -> history
       has_backtracked?(history, block, direction) -> nil
       move_will_hit_a_wall?(problem, block, direction) -> nil
 
       true ->
-        { next_block, new_problem } = UnblockMeSolver.Move.with_next(problem, direction, block)
-        new_history = Enum.concat(history, [{block, direction, 1}])
-
-        if next_block == nil do
+        case UnblockMeSolver.Move.with_next(problem, direction, block) do
+        { nil, new_problem } -> 
+          new_history = Enum.concat(history, [{block, direction, 1}])
           choose(
             solve(new_problem, 'A', :left, new_history, iteration + 1),
             solve(new_problem, 'A', :right, new_history, iteration + 1)
           )
-        else
-          case UnblockMeSolver.Move.direction(new_problem, next_block) do
+
+        { next_block, _ } -> 
+          case UnblockMeSolver.Move.direction(problem, next_block) do
             :horizontal ->
               choose(
-                solve(new_problem, next_block, :left, new_history, iteration + 1),
-                solve(new_problem, next_block, :right, new_history, iteration + 1)
+                solve(problem, next_block, :left, history, iteration + 1),
+                solve(problem, next_block, :right, history, iteration + 1)
               )
 
             :vertical -> 
               choose(
-                solve(new_problem, next_block, :up, new_history, iteration + 1),
-                solve(new_problem, next_block, :down, new_history, iteration + 1)
+                solve(problem, next_block, :up, history, iteration + 1),
+                solve(problem, next_block, :down, history, iteration + 1)
               )
 
-            _ ->
-              IO.inspect(new_problem)
-              raise "Could not make a move for #{next_block}"
+            _ -> raise "Could not make a move for #{next_block}"
           end
         end
     end
