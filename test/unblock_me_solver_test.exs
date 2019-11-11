@@ -101,5 +101,20 @@ defmodule UnblockMeSolverTest do
         {'A', :right, 1}
       ]
     end
+
+    # test "when there are 5 intersecting blocks in the way" do
+    #   assert UnblockMeSolver.solve([
+    #     [nil, nil, 'A', 'A', 'B'],
+    #     [nil, 'E', 'E', nil, 'B'],
+    #     [nil, nil, 'D', nil, 'B'],
+    #     [nil, nil, 'D', 'C', 'C'],
+    #   ]) == [
+    #     {'E', :left, 1},
+    #     {'D', :up, 1},
+    #     {'C', :left, 1},
+    #     {'B', :down, 1},
+    #     {'A', :right, 1}
+    #   ]
+    # end
   end
 end
