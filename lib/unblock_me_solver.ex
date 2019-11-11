@@ -65,31 +65,47 @@ defmodule UnblockMeSolver do
       # ]
 
   """
-  def solve(problem, block \\ 'A', direction \\ nil, history \\ [], iteration \\ 1) do
-    cond do
-      UnblockMeSolver.Move.solved?(problem, 'A') -> history
-      iteration > 20 -> raise "Took too many moves"
-      reverse?(history, block, direction) -> nil
+  def solve(problem) do
+    choose(
+      solve(problem, 'A', :left, [], 1),
+      solve(problem, 'A', :right, [], 1)
+    )
+  end
 
-      direction == nil ->
-        case UnblockMeSolver.Move.direction(problem, block) do
-          :horizontal -> solve_helper(problem, block, :left, :right, history, iteration)
-          :vertical -> solve_helper(problem, block, :up, :down, history, iteration)
-          _ -> raise "Could not make a move for #{block}"
-        end
+  def solve(problem, block, direction, history, iteration) do
+    cond do
+      iteration > 20 -> raise "Took too many moves"
+      UnblockMeSolver.Move.solved?(problem, 'A') -> history
+      has_backtracked?(history, block, direction) -> nil
+      move_will_hit_a_wall?(problem, block, direction) -> nil
 
       true ->
-        case UnblockMeSolver.Move.with_next(problem, direction, block) do
-          { nil, updated_problem } -> cond do
-            updated_problem == problem ->
-              nil
-            
-            true ->
-              solve(updated_problem, 'A', nil, Enum.concat(history, [{block, direction, 1}]), iteration + 1)
-          end
+        { next_block, new_problem } = UnblockMeSolver.Move.with_next(problem, direction, block)
+        new_history = Enum.concat(history, [{block, direction, 1}])
 
-          { next_block, _ } ->
-            solve(problem, next_block, nil, history, iteration + 1)
+        if next_block == nil do
+          choose(
+            solve(new_problem, 'A', :left, new_history, iteration + 1),
+            solve(new_problem, 'A', :right, new_history, iteration + 1)
+          )
+        else
+          case UnblockMeSolver.Move.direction(new_problem, next_block) do
+            :horizontal ->
+              choose(
+                solve(new_problem, next_block, :left, new_history, iteration + 1),
+                solve(new_problem, next_block, :right, new_history, iteration + 1)
+              )
+
+            :vertical -> 
+              choose(
+                solve(new_problem, next_block, :up, new_history, iteration + 1),
+                solve(new_problem, next_block, :down, new_history, iteration + 1)
+              )
+
+            _ ->
+              IO.inspect(new_problem)
+              raise "Could not make a move for #{next_block}"
+          end
         end
     end
   end
@@ -103,27 +119,7 @@ defmodule UnblockMeSolver do
     end
   end
 
-  def solve_helper(problem, block, first_dir, second_dir, history, iteration) do
-    if Enum.count(history) > 0 do
-      {b, d, _} = Enum.reverse(history) |> Enum.at(0)
-      first = cond do
-        b == block && d == second_dir -> nil
-        true -> solve(problem, block, first_dir, history, iteration + 1)
-      end
-      second = cond do
-        b == block && d == first_dir -> nil
-        true -> solve(problem, block, second_dir, history, iteration + 1)
-      end
-      choose(first, second)
-    else
-      choose(
-        solve(problem, block, first_dir, history, iteration + 1),
-        solve(problem, block, second_dir, history, iteration + 1)
-      )
-    end
-  end
-
-  def reverse?(history, block, direction) do
+  def has_backtracked?(history, block, direction) do
     if Enum.count(history) == 0 do
       false
     else
@@ -140,5 +136,10 @@ defmodule UnblockMeSolver do
         false
       end
     end
+  end
+
+  def move_will_hit_a_wall?(problem, block, direction) do
+    { next_block, new_problem } = UnblockMeSolver.Move.with_next(problem, direction, block)
+    new_problem == problem && next_block == nil
   end
 end
