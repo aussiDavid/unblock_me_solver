@@ -13,14 +13,41 @@ defmodule UnblockMeGeneratorTest do
     # end
   end
 
-      # [:B, :B, :A, nil, nil]
+  describe "add_blocks/2" do
+    test "when inserting B into a 2x2 problem" do
+      :rand.seed(:exsplus, {100, 102, 103})
+      assert UnblockMeSolver.Generator.add_blocks([
+        [nil, nil],
+        [nil, nil]
+      ], [:B]) == [
+        [nil, :B],
+        [nil, :B]
+      ]
+    end
 
-      # UnblockMeSolver.Generator.insert_block([nil, nil, nil, :A, nil, nil], :B) could equal
-      # [:B, :B, nil, :A, nil, nil]
+    test "when inserting B into a 3x3 problem" do
+      :rand.seed(:exsplus, {100, 102, 103})
+      assert UnblockMeSolver.Generator.add_blocks([
+        [nil, nil, nil],
+        [:A, :A, nil],
+        [nil, nil, nil],
+      ], [:B]) == [
+        [nil, nil, nil],
+        [:A, :A, :B],
+        [nil, nil, :B],
+      ]
+    end
+  end
+
+  describe "add_block/2" do
+    test "when inserting B at the start of a row" do
+     assert UnblockMeSolver.Generator.add_block([[nil, nil, :A, nil, nil]], :B) == [[:B, :B, :A, nil, nil]]
+    end
+  end
+
   describe "insert_block/2" do
     test "when inserting B at the start of a row" do
-      :rand.seed(:exsplus, {101, 102, 103})
-      assert UnblockMeSolver.Generator.insert_block([nil, nil, :A, nil, nil], :B) == [:B, :B, :A, nil, nil]
+     assert UnblockMeSolver.Generator.insert_block([nil, nil, :A, nil, nil], :B) == [:B, :B, :A, nil, nil]
     end
 
     test "when inserting B of length 3 at the start of a row" do

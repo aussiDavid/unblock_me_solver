@@ -76,11 +76,22 @@ defmodule UnblockMeSolver.Generator do
       |> UnblockMeSolver.Move.Helper.rotate_cw
       |> add_block(block)
       |> add_blocks(remaining_blocks)
+      |> UnblockMeSolver.Move.Helper.rotate_ccw
     end
   end
 
+
+  @doc """
+  Inserts a block into a problem
+
+  ## Examples
+
+      UnblockMeSolver.Generator.add_block([[nil, nil, :A, nil, nil]], :B) could equal
+      [[:B, :B, :A, nil, nil]]
+
+  """
   def add_block(problem, block) do
-    index = Enum.random(0..Enum.count(problem))
+    index = Enum.random(0..(Enum.count(problem) - 1))
     new_row = problem
     |> Enum.at(index)
     |> insert_block(block)
