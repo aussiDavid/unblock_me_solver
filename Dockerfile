@@ -19,4 +19,4 @@ COPY . .
 
 RUN mix compile
 
-CMD ["while true; do echo .; sleep 1; done"]
+CMD ["iex -S mix"]
