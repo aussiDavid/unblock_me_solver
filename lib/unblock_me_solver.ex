@@ -18,12 +18,12 @@ defmodule UnblockMeSolver do
 
   Then solving the problem:
 
-      # iex> UnblockMeSolver.generate(:trivial) |> UnblockMeSolver.solve()
-      # [
-      #   {'A', :right, 1},
-      #   {'A', :right, 1},
-      #   {'A', :right, 1},
-      # ]
+      iex> UnblockMeSolver.generate(:trivial) |> UnblockMeSolver.solve()
+      [
+        {'A', :right, 1},
+        {'A', :right, 1},
+        {'A', :right, 1},
+      ]
   """
 
   @doc """
@@ -42,12 +42,16 @@ defmodule UnblockMeSolver do
 
   The first argument specifies the difficulty. Accepted inputs are:
   * :trivial - A problem with no other blocks. Ideal for testing
+  * :simple - A problem with 1 other block. Ideal for a demo
+  * :random - A problem with randomly placed blocks. There is no gaurentee it is solvable
 
   Another other input will raise an error
   """
   def generate(difficulty \\ :trivial) do
     case difficulty do
       :trivial -> UnblockMeSolver.Generator.trivial()
+      :simple -> UnblockMeSolver.Generator.simple()
+      :random -> UnblockMeSolver.Generator.random()
       _ -> raise "Difficulty level not recognised"
     end
   end
@@ -57,12 +61,12 @@ defmodule UnblockMeSolver do
 
   ## Examples
 
-      # iex> UnblockMeSolver.generate(:trivial) |> UnblockMeSolver.solve('A')
-      # [
-      #   {'A', :right, 1},
-      #   {'A', :right, 1},
-      #   {'A', :right, 1},
-      # ]
+      iex> UnblockMeSolver.generate(:trivial) |> UnblockMeSolver.solve()
+      [
+        {'A', :right, 1},
+        {'A', :right, 1},
+        {'A', :right, 1},
+      ]
 
   """
   def solve(problem) do
