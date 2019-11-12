@@ -1,5 +1,7 @@
 FROM elixir:latest
 
+MAINTAINER David Milanese <milanese.david@gmail.com>
+
 WORKDIR /usr/src/app
 
 RUN apt-get update && \
