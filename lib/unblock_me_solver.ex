@@ -67,39 +67,41 @@ defmodule UnblockMeSolver do
   """
   def solve(problem) do
     choose(
-      solve(problem, 'A', :left, [], 1),
-      solve(problem, 'A', :right, [], 1)
+      nil,
+      solve(problem, 'A', :right, [], [], 1)
     )
   end
 
-  def solve(problem, block, direction, history, iteration) do
+  def solve(problem, block, direction, history, chain, iteration) do
     cond do
       iteration > 50 -> raise "Took too many moves"
       UnblockMeSolver.Move.solved?(problem, 'A') -> history
       has_backtracked?(history, block, direction) -> nil
       move_will_hit_a_wall?(problem, block, direction) -> nil
+      cycle_detected?(chain, block) -> nil
 
       true ->
         case UnblockMeSolver.Move.with_next(problem, direction, block) do
-        { nil, new_problem } -> 
+        { nil, new_problem } ->
           new_history = Enum.concat(history, [{block, direction, 1}])
           choose(
-            solve(new_problem, 'A', :left, new_history, iteration + 1),
-            solve(new_problem, 'A', :right, new_history, iteration + 1)
+            nil,
+            solve(new_problem, 'A', :right, new_history, [], iteration + 1)
           )
 
-        { next_block, _ } -> 
+        { next_block, _ } ->
+          new_chain = Enum.concat(chain, [block])
           case UnblockMeSolver.Move.direction(problem, next_block) do
             :horizontal ->
               choose(
-                solve(problem, next_block, :left, history, iteration + 1),
-                solve(problem, next_block, :right, history, iteration + 1)
+                solve(problem, next_block, :left, history, new_chain, iteration + 1),
+                solve(problem, next_block, :right, history, new_chain, iteration + 1)
               )
 
-            :vertical -> 
+            :vertical ->
               choose(
-                solve(problem, next_block, :up, history, iteration + 1),
-                solve(problem, next_block, :down, history, iteration + 1)
+                solve(problem, next_block, :up, history, new_chain, iteration + 1),
+                solve(problem, next_block, :down, history, new_chain, iteration + 1)
               )
 
             _ -> raise "Could not make a move for #{next_block}"
@@ -139,5 +141,13 @@ defmodule UnblockMeSolver do
   def move_will_hit_a_wall?(problem, block, direction) do
     { next_block, new_problem } = UnblockMeSolver.Move.with_next(problem, direction, block)
     new_problem == problem && next_block == nil
+  end
+
+  def cycle_detected?(chain, block) do
+    if Enum.empty?(chain) do
+      false
+    else
+      Enum.member?(chain, block)
+    end
   end
 end
