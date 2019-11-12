@@ -102,19 +102,33 @@ defmodule UnblockMeSolverTest do
       ]
     end
 
-    # test "when there are 5 intersecting blocks in the way" do
-    #   assert UnblockMeSolver.solve([
-    #     [nil, nil, 'A', 'A', 'B'],
-    #     [nil, 'E', 'E', nil, 'B'],
-    #     [nil, nil, 'D', nil, 'B'],
-    #     [nil, nil, 'D', 'C', 'C'],
-    #   ]) == [
-    #     {'E', :left, 1},
-    #     {'D', :up, 1},
-    #     {'C', :left, 1},
-    #     {'B', :down, 1},
-    #     {'A', :right, 1}
-    #   ]
-    # end
+    test "when there are 4 intersecting blocks in the way with room to move left" do
+      assert UnblockMeSolver.solve([
+        [nil, 'A', 'A', 'B'],
+        [nil, nil, nil, 'B'],
+        [nil, 'D', nil, 'B'],
+        [nil, 'D', 'C', 'C'],
+      ]) == [
+        {'D', :up, 1},
+        {'C', :left, 1},
+        {'B', :down, 1},
+        {'A', :right, 1}
+      ]
+    end
+
+    test "when there is a cycle" do
+      assert UnblockMeSolver.solve([
+        [nil, nil, 'A', 'A', 'B'],
+        [nil, 'E', 'E', nil, 'B'],
+        [nil, nil, 'D', nil, 'B'],
+        [nil, nil, 'D', 'C', 'C'],
+      ]) == [
+        {'E', :left, 1},
+        {'D', :up, 1},
+        {'C', :left, 1},
+        {'B', :down, 1},
+        {'A', :right, 1}
+      ]
+    end
   end
 end
