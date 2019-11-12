@@ -4,11 +4,13 @@ defmodule UnblockMeSolver.MixProject do
   def project do
     [
       app: :unblock_me_solver,
-      version: "0.1.0",
+      version: "1.0.0",
       elixir: "~> 1.9",
       start_permanent: Mix.env() == :prod,
       deps: deps(),
       test_coverage: [tool: ExCoveralls],
+      description: description(),
+      package: package(),
 
       # Docs
       name: "UnblockMeSolver",
@@ -36,6 +38,17 @@ defmodule UnblockMeSolver.MixProject do
       {:mix_test_watch, "~> 0.8", only: :dev, runtime: false},
       {:excoveralls, "~> 0.10", only: :test},
       {:ex_doc, "~> 0.19", only: :dev}
+    ]
+  end
+
+  defp description() do
+    "A solver and problem generator for the UnblockMe puzzle game in Elixir"
+  end
+
+  defp package() do
+    [
+      licenses: ["Apache-2.0"],
+      links: %{"GitHub" => "https://github.com/aussiDavid/unblock_me_solver"}
     ]
   end
 end
