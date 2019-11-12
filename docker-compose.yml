@@ -2,6 +2,7 @@ version: "3.5"
 
 services:
   app:
+    image: aussidavid/unblockmesovler_elixir:1
     build: ./
     volumes:
       - ./:/usr/src/app
