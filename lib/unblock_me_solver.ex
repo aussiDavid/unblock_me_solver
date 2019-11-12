@@ -43,7 +43,6 @@ defmodule UnblockMeSolver do
   The first argument specifies the difficulty. Accepted inputs are:
   * :trivial - A problem with no other blocks. Ideal for testing
   * :simple - A problem with 1 other block. Ideal for a demo
-  * :random - A problem with randomly placed blocks. There is no gaurentee it is solvable
 
   Another other input will raise an error
   """
@@ -51,7 +50,6 @@ defmodule UnblockMeSolver do
     case difficulty do
       :trivial -> UnblockMeSolver.Generator.trivial()
       :simple -> UnblockMeSolver.Generator.simple()
-      :random -> UnblockMeSolver.Generator.random()
       _ -> raise "Difficulty level not recognised"
     end
   end
@@ -76,7 +74,7 @@ defmodule UnblockMeSolver do
     )
   end
 
-  def solve(problem, block, direction, history, chain, iteration) do
+  defp solve(problem, block, direction, history, chain, iteration) do
     cond do
       iteration > 50 -> raise "Took too many moves"
       UnblockMeSolver.Move.solved?(problem, 'A') -> history
@@ -114,7 +112,7 @@ defmodule UnblockMeSolver do
     end
   end
 
-  def choose(first, second) do
+  defp choose(first, second) do
     case {first, second} do
       {nil, nil} -> nil # raise "Can not solve this"
       {nil, _} -> second
@@ -123,7 +121,7 @@ defmodule UnblockMeSolver do
     end
   end
 
-  def has_backtracked?(history, block, direction) do
+  defp has_backtracked?(history, block, direction) do
     if Enum.count(history) == 0 do
       false
     else
@@ -142,12 +140,12 @@ defmodule UnblockMeSolver do
     end
   end
 
-  def move_will_hit_a_wall?(problem, block, direction) do
+  defp move_will_hit_a_wall?(problem, block, direction) do
     { next_block, new_problem } = UnblockMeSolver.Move.with_next(problem, direction, block)
     new_problem == problem && next_block == nil
   end
 
-  def cycle_detected?(chain, block) do
+  defp cycle_detected?(chain, block) do
     if Enum.empty?(chain) do
       false
     else
