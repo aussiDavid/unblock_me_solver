@@ -19,4 +19,4 @@ COPY . .
 
 RUN mix compile
 
-CMD ["iex -S mix"]
+CMD ["iex", "-S", "mix"]
