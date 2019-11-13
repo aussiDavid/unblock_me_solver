@@ -1,64 +1,47 @@
 # UnblockMeSolver
 
-**TODO: Add description**
+A solver and problem generator for the UnblockMe puzzle game in Elixir
 
-## Usage
 
-Prefix all commands with
+## Quickstart
 
-```bash
-docker run -it --rm -u $(id -u ${USER}):$(id -g ${USER}) -v "$PWD":/usr/src/app -w /usr/src/app elixir
-```
-
-For example
-
-To run the tests
+You can run this in a Docker container using the [aussidavid/unblockmesovler_elixir](https://hub.docker.com/r/aussidavid/unblockmesovler_elixir) image
 
 ```bash
-docker run -it --rm -u $(id -u ${USER}):$(id -g ${USER}) -v "$PWD":/usr/src/app -w /usr/src/app elixir mix test
+docker run -it --rm aussidavid/unblockmesovler_elixir:latest
 ```
 
 Output:
-```
-```
-
-Start by running
-
 ```bash
-UID=${UID} GID=${GID} docker-compose up
-```
+Erlang/OTP 22 [erts-10.5.5] [source] [64-bit] [smp:4:4] [ds:4:4:10] [async-threads:1] [hipe]
 
-Run commands by prefixing
-
-```bash
-UID=${UID} GID=${GID} docker-compose exec app
-```
-
-For example. To run the tests
-```bash
-UID=${UID} GID=${GID} docker-compose exec app mix test
-```
-
-To run the tests when a file changes
-```bash
-UID=${UID} GID=${GID} docker-compose exec app mix test.watch
-
+Interactive Elixir (1.9.4) - press Ctrl+C to exit (type h() ENTER for help)
+iex(1)> UnblockMeSolver.generate()
+[
+  [nil, nil, nil, nil, nil],
+  [nil, nil, nil, nil, nil],
+  ['A', 'A', nil, nil, nil],
+  [nil, nil, nil, nil, nil],
+  [nil, nil, nil, nil, nil]
+]
+iex(2)> UnblockMeSolver.generate() |> UnblockMeSolver.solve()
+[{'A', :right, 1}, {'A', :right, 1}, {'A', :right, 1}]
+iex(3)>
 ```
 
 ## Installation
 
-If [available in Hex](https://hex.pm/docs/publish), the package can be installed
-by adding `unblock_me_solver` to your list of dependencies in `mix.exs`:
+The package can be installed by adding `unblock_me_solver` to your list of dependencies in `mix.exs`:
 
 ```elixir
 def deps do
   [
-    {:unblock_me_solver, "~> 0.1.0"}
+    {:unblock_me_solver, "~> 1.0.0"}
   ]
 end
 ```
 
-Documentation can be generated with [ExDoc](https://github.com/elixir-lang/ex_doc)
-and published on [HexDocs](https://hexdocs.pm). Once published, the docs can
-be found at [https://hexdocs.pm/unblock_me_solver](https://hexdocs.pm/unblock_me_solver).
+## Documentation
+
+Documentation can be found at [https://hexdocs.pm/unblock_me_solver](https://hexdocs.pm/unblock_me_solver).
 
