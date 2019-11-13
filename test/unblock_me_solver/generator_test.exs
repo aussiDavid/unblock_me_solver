@@ -4,8 +4,12 @@ defmodule UnblockMeGeneratorTest do
 
   describe "random/0" do
     test "when there is an A block that covers 2 or more spaces" do
-      # assert UnblockMeSolver.Generator.random |> Enum.find(fn row -> row |> Enum.any?(fn x -> x == 'A' end) end) |> Enum.count(fn x -> x == 'A' end) > 2
-      # assert UnblockMeSolver.Generator.random |> List.flatten |> Enum.member?('B') == true
+      assert UnblockMeSolver.Generator.random
+      |> Enum.find(fn row ->
+          Enum.any?(row, fn x -> x == 'A' end)
+        end)
+      |> Enum.count(fn x -> x == 'A' end)
+      > 1
     end
 
     # test "when there is a B block that covers 1 or more spaces" do

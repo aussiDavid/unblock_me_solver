@@ -80,7 +80,6 @@ defmodule UnblockMeSolver.Generator do
     end
   end
 
-
   @doc """
   Inserts a block into a problem
 

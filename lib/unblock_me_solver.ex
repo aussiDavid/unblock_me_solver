@@ -43,6 +43,7 @@ defmodule UnblockMeSolver do
   The first argument specifies the difficulty. Accepted inputs are:
   * :trivial - A problem with no other blocks. Ideal for testing
   * :simple - A problem with 1 other block. Ideal for a demo
+  * :random - A problem with randomly placed blocks. No guarantee it is solvable
 
   Another other input will raise an error
   """
@@ -50,6 +51,7 @@ defmodule UnblockMeSolver do
     case difficulty do
       :trivial -> UnblockMeSolver.Generator.trivial()
       :simple -> UnblockMeSolver.Generator.simple()
+      :random -> UnblockMeSolver.Generator.random()
       _ -> raise "Difficulty level not recognised"
     end
   end
