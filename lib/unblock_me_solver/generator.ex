@@ -155,4 +155,49 @@ defmodule UnblockMeSolver.Generator do
           Enum.map((x+1)..y, fn _ -> default end)
     end
   end
+
+  def horizontal_2U(size, length \\ 2) do
+    for x <- 0..(size-2), y <- 0..(size-1) do 0..(length-1) |> Enum.map(&([x+&1, y])) end
+  end
+
+  def vertical_2U(size, length \\ 2) do
+    for x <- 0..(size-1), y <- 0..(size-2) do 0..(length-1) |> Enum.map(&([x, y+&1])) end
+  end
+
+  def perm(a, b) do
+    cartesian_product(a, b)
+    |> Enum.filter(fn c ->
+        points = c |> List.flatten |> Enum.chunk_every(2)
+        points |> Enum.uniq |> Enum.count == points |> Enum.count
+      end)
+  end
+
+  def cartesian_product(a, b) do
+    for x <- a, y <- b, do: [x, y]
+  end
+
+  # def probs(size) do
+  #   perm(vertical_2U(size), horizontal_2U(size))
+  #   |> Enum.map(fn blocks ->
+  #     blocks
+  #     |> Enum.with_index(1)
+  #     |> Enum.reduce(Matrex.fill(size, 0), fn {block, index}, acc ->
+  #       Enum.reduce(block, acc, fn [x, y], accc -> 
+  #         Matrex.set(accc, x+1, y+1, index)
+  #       end)
+  #     end)
+  #     |> Enum.to_list
+  #     |> Enum.map(&Kernel.trunc/1)
+  #     |> Enum.map(&num_to_char/1)
+  #     |> Enum.chunk_every(size)
+  #   end)
+  # end
+
+  # def num_to_char num do
+  #   if num < 1 do
+  #     nil
+  #   else
+  #     List.to_string([num + 64])
+  #   end
+  # end
 end
