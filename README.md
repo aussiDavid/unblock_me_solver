@@ -2,7 +2,6 @@
 
 A solver and problem generator for the UnblockMe puzzle game in Elixir
 
-
 ## Quickstart
 
 You can run this in a Docker container using the [aussidavid/unblockmesovler_elixir](https://hub.docker.com/r/aussidavid/unblockmesovler_elixir) image
@@ -12,6 +11,7 @@ docker run -it --rm aussidavid/unblockmesovler_elixir:latest
 ```
 
 Output:
+
 ```bash
 Erlang/OTP 22 [erts-10.5.5] [source] [64-bit] [smp:4:4] [ds:4:4:10] [async-threads:1] [hipe]
 
@@ -44,4 +44,3 @@ end
 ## Documentation
 
 Documentation can be found at [https://hexdocs.pm/unblock_me_solver](https://hexdocs.pm/unblock_me_solver).
-
