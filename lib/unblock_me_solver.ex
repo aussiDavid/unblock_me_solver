@@ -78,9 +78,9 @@ defmodule UnblockMeSolver do
     cond do
       iteration > 50 -> raise "Took too many moves"
       UnblockMeSolver.Move.solved?(problem, 'A') -> history
-      has_backtracked?(history, block, direction) -> nil
-      move_will_hit_a_wall?(problem, block, direction) -> nil
-      cycle_detected?(chain, block) -> nil
+      backtracked?(history, block, direction) -> nil
+      hit_a_wall?(problem, block, direction) -> nil
+      cycle_detected?(chain, block, direction) -> nil
 
       true ->
         case UnblockMeSolver.Move.with_next(problem, direction, block) do
@@ -92,7 +92,7 @@ defmodule UnblockMeSolver do
           )
 
         { next_block, _ } ->
-          new_chain = Enum.concat(chain, [block])
+          new_chain = Enum.concat(chain, [{block, direction}])
           case UnblockMeSolver.Move.direction(problem, next_block) do
             :horizontal ->
               choose(
@@ -121,13 +121,13 @@ defmodule UnblockMeSolver do
     end
   end
 
-  defp has_backtracked?(history, block, direction) do
+  defp backtracked?(history, block, direction) do
     if Enum.count(history) == 0 do
       false
     else
-      {a, b, _} = Enum.reverse(history) |> Enum.at(0)
-      if a == block do
-        b == case direction do
+      {last_block, last_direction, _} = Enum.reverse(history) |> Enum.at(0)
+      if last_block == block do
+        last_direction == case direction do
           :left -> :right
           :right -> :left
           :up -> :down
@@ -140,16 +140,21 @@ defmodule UnblockMeSolver do
     end
   end
 
-  defp move_will_hit_a_wall?(problem, block, direction) do
+  defp hit_a_wall?(problem, block, direction) do
     { next_block, new_problem } = UnblockMeSolver.Move.with_next(problem, direction, block)
     new_problem == problem && next_block == nil
   end
 
-  defp cycle_detected?(chain, block) do
+  defp cycle_detected?(chain, block, direction) do
     if Enum.empty?(chain) do
       false
     else
-      Enum.member?(chain, block)
+      IO.inspect("Chain:")
+      IO.inspect(chain)
+      IO.inspect("block: #{block}, direction: #{direction}")
+      value = Enum.any?(chain, fn {chain_block, chain_direction} -> chain_block == block && chain_direction == direction end)
+      IO.inspect(value)
+      value
     end
   end
 end
