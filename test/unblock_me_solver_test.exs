@@ -130,5 +130,28 @@ defmodule UnblockMeSolverTest do
         {'A', :right, 1}
       ]
     end
+
+    test "when there is a solution through a cycle" do
+      assert UnblockMeSolver.solve([
+        [nil, nil, nil, nil, 'E'],
+        [nil, nil, nil, nil, 'E'],
+        [nil, nil, 'A', 'A', 'B'],
+        [nil, nil, 'D', nil, 'B'],
+        [nil, nil, 'D', 'C', 'C'],
+      ]) == [
+        {'A', :left, 1},
+        {'A', :left, 1},
+        {'D', :up, 1},
+        {'D', :up, 1},
+        {'D', :up, 1},
+        {'A', :right, 1},
+        {'A', :right, 1},
+        {'A', :right, 1},
+        {'A', :right, 1},
+        {'C', :left, 1},
+        {'B', :down, 1},
+        {'A', :right, 1}
+      ]
+    end
   end
 end
