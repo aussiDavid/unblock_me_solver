@@ -44,3 +44,29 @@ end
 ## Documentation
 
 Documentation can be found at [https://hexdocs.pm/unblock_me_solver](https://hexdocs.pm/unblock_me_solver).
+
+## Development
+
+All commands are run inside Docker containers. Start the Docker containers
+
+```bash
+docker-compose up
+```
+
+Run commands on the `app` container
+
+```bash
+docker-compose run --rm app [command]
+```
+
+Run tests
+
+```bash
+docker-compose run --rm app mix test
+```
+
+Run interactive terminal
+
+```bash
+docker-compose run --rm app iex -S mix
+```
