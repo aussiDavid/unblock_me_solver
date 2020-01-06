@@ -1,9 +1,8 @@
 defmodule UnblockMeSolver do
   @moduledoc """
-  UnblockMeSolver is a solver for the UnblockMe mobile puzzle game.
+  UnblockMeSolver is a solver for the UnblockMe puzzle game.
 
-  This module to generate and solve UnblockMe problems.
-  UnblockMeSolver generates and solves UnblockMe problems in various configurations
+  This module generates and solves UnblockMe problems in various configurations.
 
   For example, to generate a trivial problem:
 
@@ -26,6 +25,9 @@ defmodule UnblockMeSolver do
       ]
   """
 
+  @max_iterations 50
+  @starting_block 'A'
+
   @doc """
   Generates problems solvable by the `UnblockMeSolver.solve/1` function.
 
@@ -41,10 +43,10 @@ defmodule UnblockMeSolver do
       ]
 
   The first argument specifies the difficulty. Accepted inputs are:
-  * :trivial - A problem with no other blocks. Ideal for testing
-  * :simple - A problem with 1 other block. Ideal for a demo
+  * :trivial - (default) A problem with no other blocks. Ideal for testing.
+  * :simple - A problem with 1 other block. Ideal for a demo.
 
-  Another other input will raise an error
+  Any other inputs will raise an error.
   """
   def generate(difficulty \\ :trivial) do
     case difficulty do
@@ -55,7 +57,7 @@ defmodule UnblockMeSolver do
   end
 
   @doc """
-  Solves an UnblockMe problem generated from `UnblockMeSolver.generate/1` and returns a list of moves to solve the problem
+  Solves an UnblockMe problem generated from `UnblockMeSolver.generate/1` as a list of moves to solve the problem.
 
   ## Examples
 
@@ -68,64 +70,61 @@ defmodule UnblockMeSolver do
 
   """
   def solve(problem) do
-    choose(
-      nil,
-      solve(problem, 'A', :right, [], [], 1)
-    )
+    case solve(problem, @starting_block, :right, [], []) do
+      nil -> raise "Could not solve the problem"
+      solution -> solution
+    end
   end
 
-  defp solve(problem, block, direction, history, chain, iteration) do
+  defp solve(problem, block, direction, moves, chain) do
     cond do
-      iteration > 50 -> raise "Took too many moves"
-      UnblockMeSolver.Move.solved?(problem, 'A') -> history
-      backtracked?(history, block, direction) -> nil
+      UnblockMeSolver.Move.solved?(problem, @starting_block) -> moves
+      too_long?(chain) -> raise "Exceeded move limit: #{@max_iterations}"
       hit_a_wall?(problem, block, direction) -> nil
-      cycle_detected?(chain, block, direction) -> nil
-
+      backtracked?(moves, block, direction) -> nil
+      cycled?(chain, block, direction) -> nil
+      
       true ->
         case UnblockMeSolver.Move.with_next(problem, direction, block) do
-        { nil, new_problem } ->
-          new_history = Enum.concat(history, [{block, direction, 1}])
-          choose(
-            nil,
-            solve(new_problem, 'A', :right, new_history, [], iteration + 1)
-          )
+          { nil, new_problem } ->
+            solve(
+              new_problem,
+              @starting_block,
+              :right,
+              Enum.concat(moves, [{block, direction, 1}]),
+              []
+            )
 
-        { next_block, _ } ->
-          new_chain = Enum.concat(chain, [{block, direction}])
-          case UnblockMeSolver.Move.direction(problem, next_block) do
-            :horizontal ->
-              choose(
-                solve(problem, next_block, :left, history, new_chain, iteration + 1),
-                solve(problem, next_block, :right, history, new_chain, iteration + 1)
-              )
+          { next_block, _ } ->
+            new_chain = Enum.concat(chain, [{block, direction}])
+            case UnblockMeSolver.Move.direction(problem, next_block) do
+              :horizontal ->
+                choose(
+                  solve(problem, next_block, :left, moves, new_chain),
+                  solve(problem, next_block, :right, moves, new_chain)
+                )
 
-            :vertical ->
-              choose(
-                solve(problem, next_block, :up, history, new_chain, iteration + 1),
-                solve(problem, next_block, :down, history, new_chain, iteration + 1)
-              )
+              :vertical ->
+                choose(
+                  solve(problem, next_block, :up, moves, new_chain),
+                  solve(problem, next_block, :down, moves, new_chain)
+                )
 
-            _ -> raise "Could not make a move for #{next_block}"
+              _ -> raise "Could not make a move for #{next_block}"
           end
         end
     end
   end
 
-  defp choose(first, second) do
-    case {first, second} do
-      {nil, nil} -> nil # raise "Can not solve this"
-      {nil, _} -> second
-      {_, nil} -> first
-      _ -> Enum.min_by([first, second], fn list -> Enum.count(list) end)
-    end
+  defp too_long?(chain) do
+    Enum.count(chain) > @max_iterations
   end
 
-  defp backtracked?(history, block, direction) do
-    if Enum.count(history) == 0 do
+  defp backtracked?(moves, block, direction) do
+    if Enum.count(moves) == 0 do
       false
     else
-      {last_block, last_direction, _} = Enum.reverse(history) |> Enum.at(0)
+      {last_block, last_direction, _} = moves |> Enum.reverse |> Enum.at(0)
       if last_block == block do
         last_direction == case direction do
           :left -> :right
@@ -145,16 +144,19 @@ defmodule UnblockMeSolver do
     new_problem == problem && next_block == nil
   end
 
-  defp cycle_detected?(chain, block, direction) do
-    if Enum.empty?(chain) do
-      false
-    else
-      IO.inspect("Chain:")
-      IO.inspect(chain)
-      IO.inspect("block: #{block}, direction: #{direction}")
-      value = Enum.any?(chain, fn {chain_block, chain_direction} -> chain_block == block && chain_direction == direction end)
-      IO.inspect(value)
-      value
+  defp cycled?(chain, block, direction) do
+    chain
+    |> Enum.any?(fn {chain_block, chain_direction} ->
+      chain_block == block && chain_direction == direction 
+    end)
+  end
+
+  defp choose(first, second) do
+    case {first, second} do
+      {nil, nil} -> nil
+      {nil, _} -> second
+      {_, nil} -> first
+      _ -> [first, second] |> Enum.min_by(&Enum.count(&1))
     end
   end
 end
