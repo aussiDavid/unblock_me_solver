@@ -65,6 +65,12 @@ Run tests
 docker-compose run --rm app mix test
 ```
 
+Run tests and watch for file changes
+
+```bash
+docker-compose run --rm app mix test.watch
+```
+
 Run interactive terminal
 
 ```bash
